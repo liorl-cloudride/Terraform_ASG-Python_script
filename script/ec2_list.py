@@ -1,31 +1,50 @@
 # list of machines (ec2) that are up
-# region | instance type | external IP
+# region | instance type | external IP (Public)
 
 import boto3
 
 def list_ec2_instances() -> None:
-    session = boto3.Session(profile_name='default')
+    session = boto3.Session(profile_name='flight-tlv')
 
-    ec2_client = session.client('ec2')
+    # ec2_client = session.client('ec2')
     # print(ec2_client.describe_regions()['Regions'])
-    regions = [region['RegionName'] for region in ec2_client.describe_regions()['Regions']]
+    # regions = [region['RegionName'] for region in ec2_client.describe_regions()['Regions']]
     # print(regions)
-
+    with open('regions.txt', 'r') as file:
+        regions = [line.strip() for line in file.readlines()]
+    # try:
+    #     with open('regions.txt', 'r') as file:
+    #         regions = [line.strip() for line in file if line.strip()]  # Ensure we ignore empty lines
+    #     # If the file is empty, fetch all regions
+    #     if not regions:
+    #         ec2_client = session.client('ec2')
+    #         regions = [region['RegionName'] for region in ec2_client.describe_regions()['Regions']]
+    #         print(regions)
+    # except FileNotFoundError:
+    #     # If the file does not exist, fetch all regions
+    #     print("regions.txt file not found. Using all available regions.")
+    #     ec2_client = session.client('ec2')
+    #     regions = [region['RegionName'] for region in ec2_client.describe_regions()['Regions']]
+    #     print(regions)
+        
     all_instances = []
 
     for region in regions:
         print(f"Checking EC2 instances in region: {region}")
         region_client = session.client('ec2', region_name=region)
+        print("check")
         response = region_client.describe_instances(
             Filters=[
                 {
                     'Name': 'instance-state-name',
                     'Values': [
-                        'running'
+                        'stopped'
                     ]
                 }
             ]
         )
+        print("check2")
+
         # print(response)
 
         for reservation in response['Reservations']:
