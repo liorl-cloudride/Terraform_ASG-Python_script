@@ -10,17 +10,18 @@ resource "aws_launch_template" "asg_launch_template" {
   }
 
   tag_specifications {
-    resource_type = "instance"
+    resource_type = var.resource_type
     tags = {
-      Name = "Instance-squadsim-g4dn"
+      Name = var.resource_type_tag_name
     }
   }
 }
 
 resource "aws_autoscaling_group" "asg" {
+  name = var.autoscaling_group_name
   launch_template {
     id      = aws_launch_template.asg_launch_template.id
-    version = "$Latest"
+    version = var.launch_template_version
   }
 
   min_size            = var.min_size
@@ -30,7 +31,19 @@ resource "aws_autoscaling_group" "asg" {
 
   tag {
     key                 = "Name"
-    value               = "ASG-g4dn-instances"
+    value               = "ASG-instances"
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "Managed_by"
+    value               = "Terraform"
+    propagate_at_launch = true
+  }
+
+  tag {
+    key                 = "Owner"
+    value               = "Cloudride"
     propagate_at_launch = true
   }
 }

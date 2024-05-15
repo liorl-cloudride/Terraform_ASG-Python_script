@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
       version = "~> 5.0"
     }
   }
@@ -11,11 +11,18 @@ terraform {
     region         = "eu-central-1"
     dynamodb_table = "flight-tlv-state-locking-file"
     encrypt        = true
+    # profile        = "flight-tlv"
   }
 }
 
 provider "aws" {
-    region = var.region
-    profile = var.profile
-    # profile = "flight-tlv"
+  region  = var.region
+  profile = var.profile
+  # profile = "flight-tlv"
+  default_tags {
+    tags = {
+      Managed_by = "Terraform"
+      Owner      = "Cloudride"
+    }
+  }
 }
