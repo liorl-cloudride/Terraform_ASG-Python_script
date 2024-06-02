@@ -1,1 +1,3 @@
-Test that the file is updating in the multi-repo push.
+Test that the file is updating in the multi-repo push (with another version control (bitbucket repo).
+
+Another test with 2 repo in github account and with another version control (bitbucket repo)
